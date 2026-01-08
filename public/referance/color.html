@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartu Palet Gaya Color Hunt</title>
+    <style>
+        /* --- Reset sederhana agar tampilan konsisten --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5; /* Latar belakang halaman abu-abu terang */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* --- Styles untuk Kartu --- */
+        .color-hunt-card {
+            width: 300px;
+            /* Memberikan shadow agar terlihat seperti kartu */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            /* Overflow hidden penting agar warna di sudut tidak keluar dari border-radius */
+            overflow: hidden;
+            background-color: white;
+            transition: transform 0.3s ease;
+        }
+
+        /* Efek hover sedikit terangkat seperti di Color Hunt */
+        .color-hunt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        /* --- Styles untuk Setiap Baris Warna --- */
+        .color-bar {
+            height: 60px; /* Tinggi setiap baris warna */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: flex-grow 0.3s ease; /* Animasi halus saat hover */
+        }
+        
+        /* Opsional: Efek hover pada baris individu */
+        .color-bar:hover {
+             /* Membuat baris yang di-hover sedikit lebih besar */
+            flex-grow: 1.2;
+        }
+
+        /* --- Styles untuk Teks HEX --- */
+        .hex-code {
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* --- Utility Classes untuk Warna Teks --- */
+        /* Gunakan ini untuk warna background yang terang */
+        .text-dark {
+            color: #37393d;
+        }
+        /* Gunakan ini untuk warna background yang gelap agar kontras */
+        .text-light {
+            color: #ffffff;
+        }
+
+        /* --- Definisi Warna (Berdasarkan data Anda) --- */
+        /* Catatan: Primary dan Secondary Anda memiliki HEX yang sama (#d7d0fe).
+           Saya menggunakannya sesuai permintaan Anda.
+        */
+        .bg-primary { background-color: #d7d0fe; }
+        .bg-secondary { background-color: #ffecba; }
+        .bg-smooth-white { background-color: #efecfa; }
+        .bg-white { background-color: #ffffff; }
+        .bg-smooth-black { background-color: #37393d; }
+        .bg-absolute-black { background-color: #1e1e1e; }
+        .bg-gray { background-color: #efecff; }
+        .bg-red { background-color: #f87673; }
+
+    </style>
+</head>
+<body>
+
+    <div class="color-hunt-card">
+        
+        <div class="color-bar bg-primary">
+            <span class="hex-code text-dark">#d7d0fe</span>
+        </div>
+
+        <div class="color-bar bg-secondary">
+            <span class="hex-code text-dark">#ffecba</span>
+        </div>
+
+        <div class="color-bar bg-smooth-white">
+            <span class="hex-code text-dark">#efecfa</span>
+        </div>
+
+        <div class="color-bar bg-white">
+            <div class="color-bar bg-white" style="border-bottom: 1px solid #eee;">
+                 <span class="hex-code text-dark">#ffffff</span>
+            </div>
+        </div>
+
+        <div class="color-bar bg-smooth-black">
+            <span class="hex-code text-light">#37393d</span>
+        </div>
+
+        <div class="color-bar bg-absolute-black">
+            <span class="hex-code text-light">#1e1e1e</span>
+        </div>
+
+        <div class="color-bar bg-gray">
+            <span class="hex-code text-dark">#efecff</span>
+        </div>
+        <div class="color-bar bg-red">
+            <span class="hex-code text-dark">#f87673</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
