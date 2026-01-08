@@ -27,6 +27,23 @@ export default function ActivityBase() {
             </h3>
           </div>
 
+          <div className="mb-5 overflow-x-auto pb-2 no-scrollbar">
+            <div className="flex gap-2 min-w-max">
+              {["Semua", "Selesai", "Pending"].map((cat, i) => (
+                <button
+                  key={cat}
+                  className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                    i == 0
+                      ? "bg-[#37393d] text-white"
+                      : "bg-white text-[#37393d] hover:bg-[#37393d]/10 border border-[#efecff]"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {sortedDates.map((date) => {
             const formattedDate = formatTanggal(date);
             const txs = grouped[date];

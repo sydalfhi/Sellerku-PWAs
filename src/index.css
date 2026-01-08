@@ -58,12 +58,12 @@
   --secondary-foreground: #1e1e1e;
   --muted: #1e1e1e;
   --muted-foreground: #5f5f5f;
-  --accent: #f00;
-  --accent-foreground: #f00;
+  --accent: #1e1e1e;
+  --accent-foreground: #fff;
   --destructive: #f00;
   --border: #37393d;
   --input: #f9f8fd;
-  --ring: #f00;
+  --ring: #5f5f5f;
   --chart-1: #f00;
   --chart-2: #f00;
   --chart-3: #f00;
@@ -189,4 +189,51 @@
   src: url("/fonts/static/Outfit-Black.ttf") format("truetype");
   font-weight: 900;
   font-style: normal;
+}
+
+/* ============================= */
+/* Custom Scrollbar Styles       */
+/* ============================= */
+
+/* Webkit Browsers: Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 12px; /* Lebar scrollbar vertical */
+  height: 12px; /* Lebar scrollbar horizontal */
+  background-color: #efecfa; /* Track color (smooth white) */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #efecfa; /* Track color */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d7d0fe; /* Thumb color (primary) */
+  border-radius: 10px;
+  border: 3px solid #efecfa; /* Space between thumb & track */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ffecba; /* Hover color (secondary yellow) */
+}
+
+/* Optional: scrollbar corners */
+::-webkit-scrollbar-corner {
+  background: #efecfa; /* Matches track background */
+}
+
+/* ============================= */
+/* Firefox Support                */
+/* ============================= */
+* {
+  scrollbar-width: thin; /* "auto" or "thin" */
+  scrollbar-color: #d7d0fe #efecfa; /* thumb track */
+}
+
+/* ============================= */
+/* Smooth scrolling optional     */
+/* ============================= */
+html {
+  scroll-behavior: smooth;
 }

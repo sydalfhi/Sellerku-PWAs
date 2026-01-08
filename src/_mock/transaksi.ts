@@ -82,7 +82,43 @@ export const MockTransactionsDetail = {
             sell_price: "50000",
             discount: "10000",
             subtotal: "40000"
-        }
+        },
+        {
+            barcode: "M25011800001",
+            mtrl_code: "M25011800001",
+            mtrl_name: "Paket Pizza Mahal",
+            mtrl_desc: "",
+            satuan: "Porsi",
+            qty: "6",
+            buy_price: "310000",
+            sell_price: "510000",
+            discount: "110000",
+            subtotal: "410000"
+        },
+        {
+            barcode: "M25011800001",
+            mtrl_code: "M25011800001",
+            mtrl_name: "Paket Pizza Murah",
+            mtrl_desc: "",
+            satuan: "Porsi",
+            qty: "1",
+            buy_price: "30000",
+            sell_price: "50000",
+            discount: "10000",
+            subtotal: "40000"
+        },
+        {
+            barcode: "M25011800001",
+            mtrl_code: "M25011800001",
+            mtrl_name: "Paket Pizza Mahal",
+            mtrl_desc: "",
+            satuan: "Porsi",
+            qty: "6",
+            buy_price: "310000",
+            sell_price: "510000",
+            discount: "110000",
+            subtotal: "410000"
+        },
     ],
     total_price: "40000",
     discount_total: "0",

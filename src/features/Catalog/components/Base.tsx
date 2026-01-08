@@ -2,6 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MockProducts } from "@/_mock/product";
+import { Link } from "react-router-dom";
 
 export default function CatalogBase() {
   const products = [...MockProducts, ...MockProducts, ...MockProducts];
@@ -11,22 +12,70 @@ export default function CatalogBase() {
       {/* Main Content */}
       <section className="flex-1 flex flex-col px-4 pt-4 pb-24">
         {/* Search + Scan Button */}
-        <div className="flex items-center gap-2 mb-5">
+        <div className="flex items-center gap-3 mb-6">
+          {/* Search Input dengan Icon SVG */}
           <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-lg">
-              🔍
-            </span>
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#37393d]/60 pointer-events-none">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </div>
+
             <Input
-              placeholder="Cari..."
-              className="pl-10 bg-white border-[#d7d0fe] focus-visible:ring-[#d7d0fe] focus-visible:ring-offset-1  h-11"
+              type="text"
+              placeholder="Cari produk atau nama..."
+              className="pl-12 pr-5 h-12 bg-white  border border-[#efecff]
+                     focus-visible:ring-2 focus-visible:ring-[#d7d0fe] 
+                     focus-visible:ring-offset-2 focus-visible:border-[#d7d0fe]
+                     text-base placeholder:text-[#37393d]/50
+                     rounded-xl  transition-all duration-200"
             />
           </div>
+
+          {/* Tombol Scan Barcode */}
           <Button
             size="icon"
             variant="outline"
-            className="h-11 w-11 p-0 rounded-full"
+            className="h-12 w-12  border
+                   hover:bg-[#d7d0fe]/10 hover:border-[#d7d0fe] 
+                   text-[#37393d] transition-all duration-200"
           >
-            <span className="text-xl">📷</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+              <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+              <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+              <path d="M7 12h1" />
+              <path d="M9 12h2" />
+              <path d="M12 12h1" />
+              <path d="M14 12h2" />
+              <path d="M17 12h1" />
+              <path d="M5 8v8" />
+              <path d="M19 8v8" />
+              <path d="M8 5v14" />
+              <path d="M16 5v14" />
+            </svg>
           </Button>
         </div>
 
@@ -57,12 +106,24 @@ export default function CatalogBase() {
             let boxStyle = {
               backgroundColor: "#d7d0fe", // default ungu
               color: "#000", // default text color
+              fontWeight: "bold",
+              fontSize: "24px",
             };
 
             if (index % 3 === 1) {
-              boxStyle = { backgroundColor: "#ffecba", color: "#000" }; // kuning
+              boxStyle = {
+                backgroundColor: "#ffecba",
+                color: "#000",
+                fontWeight: "bold",
+                fontSize: "24px",
+              }; // kuning
             } else if (index % 3 === 2) {
-              boxStyle = { backgroundColor: "#37393d", color: "#fff" }; // gelap, text putih
+              boxStyle = {
+                backgroundColor: "#37393d",
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "24px",
+              }; // gelap, text putih
             }
 
             return (
@@ -72,10 +133,10 @@ export default function CatalogBase() {
               >
                 {/* Kotak di kiri dengan warna dinamis */}
                 <div
-                  className="w-6 font-semibold flex justify-center items-center"
+                  className="w-12 font-semibold flex justify-center items-center"
                   style={boxStyle}
                 >
-                  2
+                  ⌘
                 </div>
 
                 {/* Info produk */}
@@ -121,9 +182,11 @@ export default function CatalogBase() {
               <p className="text-sm text-gray-600">Total Belanja</p>
               <p className="text-xl font-bold text-[#1e1e1e]">Rp 0</p>
             </div>
-            <Button className="bg-[#d7d0fe] hover:bg-[#c5befe] text-[#1e1e1e] font-semibold px-8 rounded-full">
-              + Tambah
-            </Button>
+            <Link to="/cart">
+              <Button className="bg-[#d7d0fe] hover:bg-[#c5befe] text-[#1e1e1e] font-semibold px-8 rounded-full">
+                + Keranjang
+              </Button>
+            </Link>
           </div>
         </footer>
       )}
