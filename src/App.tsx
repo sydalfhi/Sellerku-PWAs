@@ -5,14 +5,20 @@ import ActivityPage from "@/pages/Activity";
 import ActivityDetailPage from "@/pages/ActivityDetail";
 import SettingsPage from "@/pages/Setting";
 import NotFound from "@/pages/NotFound";
-import Cartpage from "./pages/Cart";
-import PaymentPage from "./pages/Payment";
-import WelcomePage from "./pages/Welcome";
+import Cartpage from "@/pages/Cart";
+import PaymentPage from "@/pages/Payment";
+import WelcomePage from "@/pages/Welcome";
+import LoginPage from "@/pages/auth/Login";
 
 function App() {
   return (
     <Routes>
+      {/* default page */}
       <Route path="/" element={<WelcomePage />} />
+
+      {/* auth */}
+      <Route path="/auth/login" element={<LoginPage />} />
+
       <Route path="/home" element={<HomePage />} />
       <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/activity" element={<ActivityPage />} />

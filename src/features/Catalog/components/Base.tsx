@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MockProducts } from "@/_mock/product";
 import { Link } from "react-router-dom";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function CatalogBase() {
   const products = [...MockProducts, ...MockProducts, ...MockProducts];
@@ -149,7 +150,7 @@ export default function CatalogBase() {
                       <p className="text-sm text-gray-600 mt-1">
                         {product.sell_price == 0
                           ? "Gratis"
-                          : `Rp ${product.sell_price.toLocaleString("id-ID")}`}
+                          : `${formatCurrency(product.sell_price)}`}
                         <span className="text-xs text-gray-500 ml-1">
                           / {product.satuan}
                         </span>
@@ -175,8 +176,9 @@ export default function CatalogBase() {
       </section>
 
       {/* Bottom bar fixed */}
+
       {true && (
-        <footer className="fixed bottom-18 left-0 right-0 bg-white border-t border-[#efecff] px-4 py-3 z-20">
+        <footer className="fixed  md:w-[80vw] lg:w-[70vw] mx-auto bottom-18 left-0 right-0 bg-white border-t border-[#efecff] px-4 py-3 z-20">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Belanja</p>

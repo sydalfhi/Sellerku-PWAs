@@ -6,8 +6,8 @@ export default function ActivityDetailPage() {
   console.log(typeof id);
 
   return (
-    <div>
+    <main className="md:w-[80vw] lg:w-[70vw] mx-auto ">
       <ActivityDetailFeature id={id} />
-    </div>
+    </main>
   );
 }

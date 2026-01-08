@@ -83,7 +83,7 @@ const menus = [
 
 export default function Tabbar() {
   return (
-    <div className="z-999 border-t border-[#efecff] bg-white p-3 fixed bottom-0 left-0 right-0 rounded-t-3xl">
+    <div className="z-999 md:w-[80vw] lg:w-[70vw] mx-auto border-t border-[#efecff] bg-white p-3 fixed bottom-0 left-0 right-0 rounded-t-3xl">
       <div className="flex justify-between px-10">
         {menus.map((menu) => (
           <NavLink key={menu.to} to={menu.to}>

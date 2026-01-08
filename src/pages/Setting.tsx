@@ -1,6 +1,7 @@
 // components/SettingsPage.tsx
 
 import Tabbar from "@/components/fragments/Tabbar";
+import { Link } from "react-router-dom";
 
 export default function SettingsPage() {
   return (
@@ -67,9 +68,11 @@ export default function SettingsPage() {
 
           {/* Tombol Logout */}
           <div className="pt-4">
-            <button className="w-full bg-white text-red-600 font-medium py-4 rounded-2xl border border-red-100 hover:bg-red-50 transition-colors">
-              Keluar dari Akun
-            </button>
+            <Link to="/">
+              <button className="w-full bg-white text-red-600 font-medium py-4 rounded-2xl border border-red-100 hover:bg-red-50 transition-colors">
+                Keluar dari Akun
+              </button>
+            </Link>
           </div>
 
           {/* Info tambahan kecil di bawah */}
