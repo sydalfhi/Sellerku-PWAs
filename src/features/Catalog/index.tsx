@@ -1,11 +1,11 @@
 import React from "react";
-import HomeBase from "./components/Base";
+import CatalogBase from "./components/Base";
 import Tabbar from "@/components/fragments/Tabbar";
 
-export default function HomeFeature() {
+export default function CatalogFeature() {
   return (
     <div className="relative">
-      <HomeBase />
+      <CatalogBase />
       <Tabbar />
     </div>
   );

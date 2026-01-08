@@ -1,69 +1,23 @@
+import { MockTransactionsActivity } from "@/_mock/transaksi";
+import { formatTanggal } from "@/utils/dateFormate";
+import { getGreeting } from "@/utils/greeting";
+import { Link } from "react-router-dom";
+
 export default function HomeBase() {
-  // Data transaksi
-  const transactions = [
-    {
-      id: 1,
-      name: "Starbucks Coffee",
-      color: "#1e1e1e",
-      iconColor: "#ffffff",
-    },
-    {
-      id: 2,
-      name: "Netflix Subscription",
+  const transactions = MockTransactionsActivity;
+  const iconBgColors = ["#d7d0fe", "#ffecba", "#efecfa"];
 
-      color: "#ffecba",
-      iconColor: "#1e1e1e",
-    },
-    {
-      id: 3,
-      name: "Amazon Purchase",
-
-      color: "#d7d0fe",
-      iconColor: "#1e1e1e",
-    },
-    {
-      id: 4,
-      name: "Uber Ride",
-
-      color: "#1e1e1e",
-      iconColor: "#ffffff",
-    },
-    {
-      id: 2,
-      name: "Netflix Subscription",
-
-      color: "#ffecba",
-      iconColor: "#1e1e1e",
-    },
-    {
-      id: 3,
-      name: "Amazon Purchase",
-      date: "October 15, 2020 AM",
-      amount: "$89.50",
-      cashback: "$1.79",
-      color: "#d7d0fe",
-      iconColor: "#1e1e1e",
-    },
-    {
-      id: 4,
-      name: "Uber Ride",
-      date: "October 14, 2020 PM",
-      amount: "$23.40",
-      cashback: "$0.47",
-      color: "#1e1e1e",
-      iconColor: "#ffffff",
-    },
-  ];
-
+  let nameCashier = "Syaid";
+  let greeting = getGreeting();
   return (
-    <div className="bg-white p-4 md:p-6">
+    <div className="p-4 md:p-6">
       {/* Salam pengguna */}
       <section className="mb-8 flex justify-between items-center">
         <div>
-          <h4 className="scroll-m-20 text-2xl md:text-3xl font-semibold tracking-tight text-gray-800">
-            Good Morning Terry
+          <h4 className=" text-xl md:text-3xl font-semibold tracking-tight text-gray-800">
+            {greeting}, {nameCashier}
           </h4>
-          <p className="text-gray-500 text-lg">
+          <p className="text-gray-500 text-base">
             Welcome to{" "}
             <span className="underline decoration-wavy underline-offset-4 decoration-primary">
               Sellerku POS
@@ -78,7 +32,7 @@ export default function HomeBase() {
       <section>
         <div>
           <div className="flex space-x-3">
-            <div className=" bg-gradient-to-br from-[#b8abff] to-[#d7d0fe] w-full p-3 rounded-3xl flex flex-col items-stretch ">
+            <div className=" bg-linear-to-br from-[#b8abff] to-[#d7d0fe] w-full p-3 rounded-3xl flex flex-col items-stretch ">
               <div className=" rounded-xl h-full ">
                 <div className=" w-12 h-12 bg-[#fff] rounded-full text-[#242529] flex justify-center items-center">
                   🐨
@@ -92,7 +46,7 @@ export default function HomeBase() {
               </div>
             </div>
             <div className="flex flex-col space-y-3 w-full">
-              <div className="bg-gradient-to-br from-[#ffdb7e] to-[#ffecba]  w-full p-2 rounded-3xl h-full flex flex-col relative">
+              <div className="bg-linear-to-br from-[#ffdb7e] to-[#ffecba]  w-full p-2 rounded-3xl h-full flex flex-col relative">
                 <div className="bg-[#ff7075] px-3 py-1 rounded-full flex justify-center items-center absolute -top-2 right-2">
                   <p className="text-white  text-sm">NEW</p>
                 </div>
@@ -107,7 +61,7 @@ export default function HomeBase() {
                   </h4>
                 </div>
               </div>
-              <div className=" bg-gradient-to-br from-[#3c3e42] to-[#66696e] w-full p-2 rounded-3xl h-full flex flex-col ">
+              <div className=" bg-linear-to-br from-[#3c3e42] to-[#66696e] w-full p-2 rounded-3xl h-full flex flex-col ">
                 <div className="  rounded-xl h-full ">
                   <div className=" w-12 h-12 bg-[#fff] rounded-full text-[#242529] flex justify-center items-center">
                     🔎
@@ -130,22 +84,27 @@ export default function HomeBase() {
             <h3 className="text-xl font-semibold text-[#1e1e1e] mb-2">
               Recent Search
             </h3>
-            <span className="underline decoration-wavy underline-offset-4 decoration-[#1e1e1e]">
-              Show All
-            </span>
+            <Link to="/activity">
+              <span className="underline decoration-wavy underline-offset-4 decoration-[#1e1e1e]">
+                Show All
+              </span>
+            </Link>
           </div>
           <div className="space-y-2">
-            {transactions.map((item) => (
+            {transactions.map((item, index) => (
               <div
-                key={item.id}
+                key={item.out_no}
                 className="rounded-full p-1.5 bg-[#f9f8fd] hover:bg-[#fff] hover:scale-105 transition-all cursor-pointer duration-200"
               >
                 <div className="flex items-center">
                   {/* Icon */}
                   <div className="mr-3">
                     <div
-                      className="rounded-full w-12 h-12 flex items-center justify-center"
-                      style={{ backgroundColor: item.color }}
+                      className="rounded-full w-12 h-12 flex items-center justify-center transition-colors"
+                      style={{
+                        backgroundColor:
+                          iconBgColors[index % iconBgColors.length], // bergilir sesuai array
+                      }}
                     >
                       <span
                         className="text-2xl font-bold"
@@ -158,7 +117,12 @@ export default function HomeBase() {
 
                   {/* Text */}
                   <div className="flex-1">
-                    <p className="text-foreground font-medium">{item.name}</p>
+                    <p className="text-foreground font-medium">
+                      {item.cust_name}
+                    </p>
+                    <p className="text-foreground font-light text-xs">
+                      {formatTanggal(item.out_date)}
+                    </p>
                   </div>
 
                   {/* Action Icon */}

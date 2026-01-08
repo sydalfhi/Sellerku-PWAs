@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const HomeIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -74,42 +76,50 @@ const SettingsIcon = () => (
 
 export default function Tabbar() {
   return (
-    <div className="z-[999] border-t border-[#efecff] bg-white p-3 fixed bottom-0 left-0 right-0 rounded-t-3xl">
+    <div className="z-999 border-t border-[#efecff] bg-white p-3 fixed bottom-0 left-0 right-0 rounded-t-3xl">
       <div className="flex justify-between px-10">
-        <div className=" flex flex-col justify-center items-center space-y-1 relative">
-          <HomeIcon />
-          <p className="text-xs font-semibold text-[#37393d]">Home</p>
-          <div className="active absolute -top-1 right-0">
-            <div className=" w-2 h-2 rounded-full bg-primary "></div>
-          </div>
-        </div>
-        <div>
+        <Link to="/home">
           <div className=" flex flex-col justify-center items-center space-y-1 relative">
-            <TransferIcon />
-            <p className="text-xs font-semibold text-[#37393d]">Produk</p>
+            <HomeIcon />
+            <p className="text-xs font-semibold text-[#37393d]">Home</p>
             <div className="active absolute -top-1 right-0">
               <div className=" w-2 h-2 rounded-full bg-primary "></div>
             </div>
           </div>
-        </div>
-        <div>
-          <div className=" flex flex-col justify-center items-center space-y-1 relative">
-            <MapIcon />
-            <p className="text-xs font-semibold text-[#37393d]">History</p>
-            <div className="active absolute -top-1 right-0">
-              <div className=" w-2 h-2 rounded-full bg-primary "></div>
+        </Link>
+        <Link to="/catalog">
+          <div>
+            <div className=" flex flex-col justify-center items-center space-y-1 relative">
+              <TransferIcon />
+              <p className="text-xs font-semibold text-[#37393d]">Produk</p>
+              <div className="active absolute -top-1 right-0">
+                <div className=" w-2 h-2 rounded-full bg-primary "></div>
+              </div>
             </div>
           </div>
-        </div>
-        <div>
-          <div className=" flex flex-col justify-center items-center space-y-1 relative">
-            <SettingsIcon />
-            <p className="text-xs font-semibold text-[#37393d]">Setting</p>
-            <div className="active absolute -top-1 right-0">
-              <div className=" w-2 h-2 rounded-full bg-primary "></div>
+        </Link>
+        <Link to="/activity">
+          <div>
+            <div className=" flex flex-col justify-center items-center space-y-1 relative">
+              <MapIcon />
+              <p className="text-xs font-semibold text-[#37393d]">History</p>
+              <div className="active absolute -top-1 right-0">
+                <div className=" w-2 h-2 rounded-full bg-primary "></div>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
+        <Link to="/setting">
+          <div>
+            <div className=" flex flex-col justify-center items-center space-y-1 relative">
+              <SettingsIcon />
+              <p className="text-xs font-semibold text-[#37393d]">Setting</p>
+              <div className="active absolute -top-1 right-0">
+                <div className=" w-2 h-2 rounded-full bg-primary "></div>
+              </div>
+            </div>
+          </div>
+        </Link>
       </div>
     </div>
   );

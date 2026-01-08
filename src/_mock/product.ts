@@ -1,0 +1,53 @@
+export const MockProducts = [
+    {
+        mtrl_code: "M24061600001",
+        barcode: "M24061600001",
+        mtrl_hash: "VRb4mbOIPqe7qvOtW8CV",
+        mtrl_name: "Burger Jelata",
+        mtrl_desc: "Burger Dengann topin minimalis, cocok untuk rakyat jelata",
+        perhitungan_stock: "1",
+        type_id: "1",
+        type_name: "Default",
+        cat_id: "1",
+        cat_name: "Burger",
+        satuan: "Porsi",
+        buy_price: "13000",
+        sell_price: "20000",
+        grosir_price: "0",
+        stock: "37"
+    },
+    {
+        mtrl_code: "M24080800001",
+        barcode: "",
+        mtrl_hash: "4xtDFC6KT05CVCkDmS3j",
+        mtrl_name: "Sepatu Pantofel",
+        mtrl_desc: "sepatu",
+        perhitungan_stock: "1",
+        type_id: "1",
+        type_name: "Default",
+        cat_id: "6",
+        cat_name: "Sepatu Cowok",
+        satuan: "Pasang",
+        buy_price: "300000",
+        sell_price: "400000",
+        grosir_price: "0",
+        stock: "45"
+    },
+    {
+        mtrl_code: "M24061600007",
+        barcode: "",
+        mtrl_hash: "w3pncbeqkAQeQii85Fni",
+        mtrl_name: "Pizza Teriyaki udang saus tiram",
+        mtrl_desc: "pizaa enak",
+        perhitungan_stock: "1",
+        type_id: "1",
+        type_name: "Default",
+        cat_id: "4",
+        cat_name: "Pizza",
+        satuan: "Porsi",
+        buy_price: "0",
+        sell_price: "0",
+        grosir_price: "0",
+        stock: "85"
+    }
+];
