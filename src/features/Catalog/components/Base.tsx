@@ -4,9 +4,18 @@ import { Button } from "@/components/ui/button";
 import { MockProducts } from "@/_mock/product";
 import { Link } from "react-router-dom";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { useTransactionStore } from "@/features/Cart/store/transactionStore";
+import { useShallow } from "zustand/shallow";
 
-export default function CatalogBase() {
+export default function CatalogPage() {
   const products = [...MockProducts, ...MockProducts, ...MockProducts];
+
+  // Ambil fungsi addToCart dan cart total dari Zustand
+  const [addToCart, cart] = useTransactionStore(
+    useShallow((state) => [state.addToCart, state.cart])
+  );
+  // Hitung total belanja
+  const totalBelanja = cart.reduce((acc, item) => acc + item.subtotal, 0);
 
   return (
     <div className="min-h-screen flex flex-col mb-40">
@@ -105,8 +114,8 @@ export default function CatalogBase() {
           {products.map((product, index) => {
             // Tentukan warna berdasarkan index
             let boxStyle = {
-              backgroundColor: "#d7d0fe", // default ungu
-              color: "#000", // default text color
+              backgroundColor: "#d7d0fe",
+              color: "#000",
               fontWeight: "bold",
               fontSize: "24px",
             };
@@ -117,20 +126,21 @@ export default function CatalogBase() {
                 color: "#000",
                 fontWeight: "bold",
                 fontSize: "24px",
-              }; // kuning
+              };
             } else if (index % 3 === 2) {
               boxStyle = {
                 backgroundColor: "#37393d",
                 color: "#fff",
                 fontWeight: "bold",
                 fontSize: "24px",
-              }; // gelap, text putih
+              };
             }
 
             return (
               <div
                 key={index}
-                className="bg-white rounded-xl overflow-hidden border border-[#efecff] cursor-pointer flex  "
+                className="bg-white rounded-xl overflow-hidden border border-[#efecff] cursor-pointer flex hover:shadow-md transition"
+                onClick={() => addToCart(product, 1)} // Klik langsung tambah ke keranjang
               >
                 {/* Kotak di kiri dengan warna dinamis */}
                 <div
@@ -175,14 +185,15 @@ export default function CatalogBase() {
         </div>
       </section>
 
-      {/* Bottom bar fixed */}
-
-      {true && (
-        <footer className="fixed  md:w-[80vw] lg:w-[70vw] mx-auto bottom-18 left-0 right-0 bg-white border-t border-[#efecff] px-4 py-3 z-20">
+      {/* Bottom bar jika ada barang di keranjang */}
+      {cart.length > 0 && (
+        <footer className="fixed md:w-[80vw] lg:w-[70vw] mx-auto bottom-18 left-0 right-0 bg-white border-t border-[#efecff] px-4 py-3 z-20">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Belanja</p>
-              <p className="text-xl font-bold text-[#1e1e1e]">Rp 0</p>
+              <p className="text-xl font-bold text-[#1e1e1e]">
+                {formatCurrency(totalBelanja)}
+              </p>
             </div>
             <Link to="/cart">
               <Button className="bg-[#d7d0fe] hover:bg-[#c5befe] text-[#1e1e1e] font-semibold px-8 rounded-full">
