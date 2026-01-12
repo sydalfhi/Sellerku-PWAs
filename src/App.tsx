@@ -10,10 +10,12 @@ import Cartpage from "@/pages/Cart";
 import PaymentPage from "@/pages/Payment";
 import WelcomePage from "@/pages/Welcome";
 import LoginPage from "@/pages/Login";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { RequireAuth, GuestOnly } from "@/middleware/authMiddleware";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import BarcodeScanPage from "./pages/BarcodeScan";
 
 function App() {
   const queryClient = new QueryClient();
@@ -38,11 +40,13 @@ function App() {
           <Route path="/setting" element={<SettingsPage />} />
           <Route path="/cart" element={<Cartpage />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/barcode-scan" element={<BarcodeScanPage />} />
         </Route>
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ReactQueryDevtools position="right" />
     </QueryClientProvider>
   );
 }

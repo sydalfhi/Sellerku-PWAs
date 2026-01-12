@@ -1,21 +1,62 @@
-// components/CatalogPage.tsx
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { MockProducts } from "@/_mock/product";
 import { Link } from "react-router-dom";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { useTransactionStore } from "@/features/Cart/store/transactionStore";
 import { useShallow } from "zustand/shallow";
+import { useCategory } from "../hooks/useCategory";
+import { useCategoryStore } from "../store/categoryStore";
+import { useEffect, useState } from "react";
+import { useCatalog } from "../hooks/useCatalog";
+import Loading from "@/components/fragments/Loadin";
+import type { CatalogItem } from "@/types/catalog.type";
 
 export default function CatalogPage() {
-  const products = [...MockProducts, ...MockProducts, ...MockProducts];
+  const [inputValue, setInputValue] = useState(""); // state input langsung
+  const [debouncedValue, setDebouncedValue] = useState(""); // state yang terupdate setelah debounce
+  const email = "ytumbalkasir@gmail.com";
 
+  // Pindahkan semua hook ke atas tanpa kondisi
+  const { selectedCategory, setSelectedCategory } = useCategoryStore();
+
+  const { data: categoriesData = [], isLoading: isCategoryLoading } =
+    useCategory(email);
+
+  // Tambahkan "Semua" sebagai kategori default
+  const categories = [{ cat_id: "0", cat_name: "Semua" }, ...categoriesData];
+  // ============END CATEGORY======================
+  const { data: catalogsData = [], isLoading: isCatalogLoading } = useCatalog({
+    email,
+    cat_id: selectedCategory.cat_id,
+    mtrl_name: debouncedValue,
+  });
+
+  const products: CatalogItem[] = catalogsData;
+
+  // ================
   // Ambil fungsi addToCart dan cart total dari Zustand
   const [addToCart, cart] = useTransactionStore(
-    useShallow((state) => [state.addToCart, state.cart])
+    useShallow((state) => [state?.addToCart, state?.cart])
   );
+
   // Hitung total belanja
   const totalBelanja = cart.reduce((acc, item) => acc + item.subtotal, 0);
+
+  useEffect(() => {
+    setSelectedCategory({ cat_id: "0", cat_name: "Semua" });
+  }, [setSelectedCategory]);
+
+  // useEffect untuk handle debounce
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(inputValue); // update state setelah 1 detik
+    }, 1000); // 1000ms = 1 detik
+
+    // clear timeout jika inputValue berubah sebelum 1 detik
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [inputValue]);
 
   return (
     <div className="min-h-screen flex flex-col mb-40">
@@ -44,6 +85,8 @@ export default function CatalogPage() {
 
             <Input
               type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
               placeholder="Cari produk atau nama..."
               className="pl-12 pr-5 h-12 bg-white  border border-[#efecff]
                      focus-visible:ring-2 focus-visible:ring-[#d7d0fe] 
@@ -54,12 +97,9 @@ export default function CatalogPage() {
           </div>
 
           {/* Tombol Scan Barcode */}
-          <Button
-            size="icon"
-            variant="outline"
-            className="h-12 w-12  border
-                   hover:bg-[#d7d0fe]/10 hover:border-[#d7d0fe] 
-                   text-[#37393d] transition-all duration-200"
+          <Link
+            to="/barcode-scan"
+            className="flex h-12 w-12  border border-[#efecff] items-center justify-center rounded-lg"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -86,102 +126,123 @@ export default function CatalogPage() {
               <path d="M8 5v14" />
               <path d="M16 5v14" />
             </svg>
-          </Button>
+          </Link>
         </div>
 
+        {isCategoryLoading && (
+          <div className="flex justify-center items-center h-full">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#d7d0fe]"></div>
+          </div>
+        )}
         {/* Kategori horizontal scroll */}
         <div className="mb-5 overflow-x-auto pb-2 no-scrollbar">
           <div className="flex gap-2 min-w-max">
-            {["Semua", "Burger", "Minuman", "Hot Dog", "Pizza", "Lainnya"].map(
-              (cat, i) => (
+            {isCategoryLoading ||
+              categories.map((cat) => (
                 <button
-                  key={cat}
+                  key={cat.cat_id}
+                  onClick={() => setSelectedCategory(cat)}
                   className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                    i == 0
+                    selectedCategory.cat_id === cat.cat_id
                       ? "bg-[#37393d] text-white"
                       : "bg-white text-[#37393d] hover:bg-[#37393d]/10 border border-[#efecff]"
                   }`}
                 >
-                  {cat}
+                  {cat.cat_name}
                 </button>
-              )
-            )}
+              ))}
           </div>
         </div>
 
+        {isCatalogLoading && (
+          <>
+            <Loading />
+          </>
+        )}
+
         {/* List Produk Vertikal */}
         <div className="grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          {products.map((product, index) => {
-            // Tentukan warna berdasarkan index
-            let boxStyle = {
-              backgroundColor: "#d7d0fe",
-              color: "#000",
-              fontWeight: "bold",
-              fontSize: "24px",
-            };
-
-            if (index % 3 === 1) {
-              boxStyle = {
-                backgroundColor: "#ffecba",
+          {products &&
+            products.map((product, index) => {
+              // Tentukan warna berdasarkan index
+              let boxStyle = {
+                backgroundColor: "#d7d0fe",
                 color: "#000",
                 fontWeight: "bold",
                 fontSize: "24px",
               };
-            } else if (index % 3 === 2) {
-              boxStyle = {
-                backgroundColor: "#37393d",
-                color: "#fff",
-                fontWeight: "bold",
-                fontSize: "24px",
-              };
-            }
 
-            return (
-              <div
-                key={index}
-                className="bg-white rounded-xl overflow-hidden border border-[#efecff] cursor-pointer flex hover:shadow-md transition"
-                onClick={() => addToCart(product, 1)} // Klik langsung tambah ke keranjang
-              >
-                {/* Kotak di kiri dengan warna dinamis */}
+              if (index % 3 === 1) {
+                boxStyle = {
+                  backgroundColor: "#ffecba",
+                  color: "#000",
+                  fontWeight: "bold",
+                  fontSize: "24px",
+                };
+              } else if (index % 3 === 2) {
+                boxStyle = {
+                  backgroundColor: "#37393d",
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: "24px",
+                };
+              }
+
+              return (
                 <div
-                  className="w-12 font-semibold flex justify-center items-center"
-                  style={boxStyle}
+                  key={index}
+                  className="bg-white rounded-xl overflow-hidden border border-[#efecff] cursor-pointer flex hover:shadow-md transition"
+                  onClick={() =>
+                    addToCart(
+                      {
+                        ...product,
+                        sell_price: Number(product.sell_price),
+                        stock: Number(product.stock), // konversi stock juga
+                      },
+                      1
+                    )
+                  }
                 >
-                  ⌘
-                </div>
+                  {/* Kotak di kiri dengan warna dinamis */}
+                  <div
+                    className="w-12 font-semibold flex justify-center items-center"
+                    style={boxStyle}
+                  >
+                    ⌘
+                  </div>
 
-                {/* Info produk */}
-                <div className="p-4 flex-1 flex flex-col gap-2">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-[#1e1e1e] text-base leading-tight">
-                        {product.cat_name}
-                      </h3>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {product.sell_price == 0
-                          ? "Gratis"
-                          : `${formatCurrency(product.sell_price)}`}
-                        <span className="text-xs text-gray-500 ml-1">
-                          / {product.satuan}
-                        </span>
-                      </p>
-                    </div>
+                  {/* Info produk */}
+                  <div className="p-4 flex-1 flex flex-col gap-2">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-[#1e1e1e] text-base leading-tight">
+                          {product.cat_name}
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {product.sell_price == "0"
+                            ? "Gratis"
+                            : `${formatCurrency(product.sell_price)}`}
+                          <span className="text-xs text-gray-500 ml-1">
+                            / {product.satuan}
+                          </span>
+                        </p>
+                      </div>
 
-                    <div className="flex flex-col items-end gap-1 shrink-0">
-                      <p className="text-xs text-green-600 font-medium">
-                        Stok: {product.stock}
-                      </p>
-                      {product.qty > 0 && (
-                        <span className="text-xs font-light text-[#f57772]">
-                          habis
-                        </span>
-                      )}
+                      <div className="flex flex-col items-end gap-1 shrink-0">
+                        <p className="text-xs text-green-600 font-medium">
+                          Stok: {product.stock}
+                        </p>
+                        {/* {product.stock > 0 && (
+                          <span className="text-xs font-light text-[#f57772]">
+                            habis
+                          </span>
+                        )} */}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </section>
 
@@ -192,7 +253,7 @@ export default function CatalogPage() {
             <div>
               <p className="text-sm text-gray-600">Total Belanja</p>
               <p className="text-xl font-bold text-[#1e1e1e]">
-                {formatCurrency(totalBelanja)}
+                {formatCurrency(String(totalBelanja))}
               </p>
             </div>
             <Link to="/cart">

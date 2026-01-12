@@ -8,8 +8,16 @@ export const useLogin = () => {
     return useMutation({
         mutationFn: loginUser,
         onSuccess: (data) => {
-            loginStore(data.data);
 
+            if (data.success) {
+                loginStore(data.data);
+            }else{
+                console.info(data);
+            }
+
+        },
+        onError: (error) => {
+            throw error;
         },
     });
 };

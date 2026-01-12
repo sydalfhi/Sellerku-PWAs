@@ -1,4 +1,4 @@
-import React from "react";
+
 import HomeBase from "./components/Base";
 import Tabbar from "@/components/fragments/Tabbar";
 

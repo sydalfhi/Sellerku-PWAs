@@ -1,14 +1,26 @@
 import { Button } from "@/components/ui/button";
-
 import { Link, useNavigate } from "react-router-dom";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { useShallow } from "zustand/shallow";
 import { useTransactionStore } from "../store/transactionStore";
 import { useState } from "react";
 
+// Interface untuk item cart dari transactionStore
+interface TransactionCartItem {
+  mtrl_code: string;
+  mtrl_name: string;
+  sell_price: number;
+  satuan: string;
+  stock: number;
+  qty: number;
+  subtotal: number;
+}
+
+
 export default function CartBase() {
   const navigate = useNavigate();
   const [showCancelModal, setShowCancelModal] = useState(false);
+  
   // Ambil semua state & action dari transactionStore
   const [
     cart,
@@ -19,14 +31,10 @@ export default function CartBase() {
     customer,
     diskonSubtotal,
     ppn,
-    paidAmount,
-    changeAmount,
     setTanggalTransaksi,
-    setMetodePembayaran,
     setCustomer,
     setDiskonSubtotal,
     setPPN,
-    setPaidAmount,
     clearTransaction,
   ] = useTransactionStore(
     useShallow((state) => [
@@ -38,29 +46,28 @@ export default function CartBase() {
       state.customer,
       state.diskonSubtotal,
       state.ppn,
-      state.paidAmount,
-      state.changeAmount,
       state.setTanggalTransaksi,
-      state.setMetodePembayaran,
       state.setCustomer,
       state.setDiskonSubtotal,
       state.setPPN,
-      state.setPaidAmount,
       state.clearTransaction,
     ])
   );
 
-  const totalQuantity = cart.reduce((sum, item) => sum + item.qty, 0);
-  const totalSubtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
+  // Cast cart ke tipe TransactionCartItem
+  const typedCart = cart as unknown as TransactionCartItem[];
+
+  const totalQuantity = typedCart.reduce((sum, item) => sum + item.qty, 0);
+  const totalSubtotal = typedCart.reduce((sum, item) => sum + item.subtotal, 0);
   const totalFinal = totalSubtotal - diskonSubtotal + ppn;
 
-  const increaseQty = (item) => {
+  const increaseQty = (item: TransactionCartItem) => {
     if (item.qty < Number(item.stock)) {
       updateQty(item.mtrl_code, item.qty + 1);
     }
   };
 
-  const decreaseQty = (item) => {
+  const decreaseQty = (item: TransactionCartItem) => {
     if (item.qty > 1) {
       updateQty(item.mtrl_code, item.qty - 1);
     } else {
@@ -70,11 +77,11 @@ export default function CartBase() {
 
   return (
     <div className="min-h-screen bg-[#fcfbff] pb-2">
-      {cart.length === 0 && (
+      {typedCart.length === 0 && (
         <div className="text-center text-gray-500 mt-10">Keranjang kosong</div>
       )}
 
-      {cart.map((item) => (
+      {typedCart.map((item) => (
         <div
           key={item.mtrl_code}
           className="border-b border-gray-200 px-2 mb-1"
@@ -92,7 +99,7 @@ export default function CartBase() {
           <div className="px-4 py-1">
             <div className="flex justify-between items-center mb-2.5 text-sm">
               <div className="text-gray-600">
-                {formatCurrency(item.sell_price)} / {item.satuan}
+                {formatCurrency(String(item.sell_price))} / {item.satuan}
               </div>
             </div>
 
@@ -118,7 +125,7 @@ export default function CartBase() {
             </div>
 
             <div className="text-right text-sm mt-1">
-              Subtotal: {formatCurrency(item.subtotal)}
+              Subtotal: {formatCurrency(String(item.subtotal))}
             </div>
           </div>
         </div>
@@ -172,7 +179,7 @@ export default function CartBase() {
 
           <div className="flex justify-between text-base font-medium">
             <span className="text-gray-700">Subtotal</span>
-            <span>{formatCurrency(totalSubtotal)}</span>
+            <span>{formatCurrency(String(totalSubtotal))}</span>
           </div>
 
           <div className="flex justify-between text-sm text-gray-600">
@@ -183,7 +190,7 @@ export default function CartBase() {
                 onClick={() => {
                   const newDiscount = prompt(
                     "Masukkan diskon subtotal:",
-                    diskonSubtotal
+                    diskonSubtotal.toString()
                   );
                   if (newDiscount) setDiskonSubtotal(Number(newDiscount));
                 }}
@@ -191,7 +198,7 @@ export default function CartBase() {
                 +
               </button>
             </div>
-            <span>{formatCurrency(diskonSubtotal)}</span>
+            <span>{formatCurrency(String(diskonSubtotal))}</span>
           </div>
 
           <div className="flex justify-between text-sm text-gray-600">
@@ -200,21 +207,21 @@ export default function CartBase() {
               <button
                 className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded"
                 onClick={() => {
-                  const newPPN = prompt("Masukkan PPN:", ppn);
+                  const newPPN = prompt("Masukkan PPN:", ppn.toString());
                   if (newPPN) setPPN(Number(newPPN));
                 }}
               >
                 +
               </button>
             </div>
-            <span>{formatCurrency(ppn)}</span>
+            <span>{formatCurrency(String(ppn))}</span>
           </div>
 
           <hr className="border-gray-200 my-3" />
 
           <div className="flex justify-between text-xl font-bold text-[#1e1e1e]">
             <span>TOTAL</span>
-            <span>{formatCurrency(totalFinal)}</span>
+            <span>{formatCurrency(String(totalFinal))}</span>
           </div>
         </div>
 
@@ -266,19 +273,19 @@ export default function CartBase() {
           {/* 20% */}
           <Button
             variant="destructive"
-            className="flex-[2]"
+            className="flex-2"
             onClick={() => setShowCancelModal(true)}
           >
             Batalkan
           </Button>
 
           {/* 30% */}
-          <Button variant="secondary" className="flex-[3]">
+          <Button variant="secondary" className="flex-3">
             Pending
           </Button>
 
           {/* 50% */}
-          <Link to="/payment" className="flex-[5]">
+          <Link to="/payment" className="flex-5">
             <Button variant="default" className="w-full font-bold">
               Pembayaran
             </Button>
