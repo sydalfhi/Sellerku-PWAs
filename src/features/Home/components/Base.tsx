@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export default function HomeBase() {
   const transactions = MockTransactionsActivity;
-  const iconBgColors = ["#d7d0fe", "#ffecba", "#efecfa"];
+  const iconBgColors : string[] = ["#d7d0fe", "#ffecba", "#efecfa"];
 
   let nameCashier = "Syaid";
   let greeting = getGreeting();
@@ -34,7 +34,7 @@ export default function HomeBase() {
           <div className="flex space-x-3">
             <div className=" bg-linear-to-br from-[#b8abff] to-[#d7d0fe] w-full p-3 rounded-3xl flex flex-col items-stretch ">
               <div className=" rounded-xl h-full ">
-                <div className=" w-12 h-12 bg-[#fff] rounded-full text-[#242529] flex justify-center items-center">
+                <div className=" w-12 h-12 bg-white rounded-full text-[#242529] flex justify-center items-center">
                   🐨
                 </div>
               </div>
@@ -51,7 +51,7 @@ export default function HomeBase() {
                   <p className="text-white  text-sm">NEW</p>
                 </div>
                 <div className="  rounded-xl h-full ">
-                  <div className=" w-12 h-12 bg-[#fff] rounded-full text-[#242529] flex justify-center items-center">
+                  <div className=" w-12 h-12 bg-white rounded-full text-[#242529] flex justify-center items-center">
                     📧
                   </div>
                 </div>
@@ -63,7 +63,7 @@ export default function HomeBase() {
               </div>
               <div className=" bg-linear-to-br from-[#3c3e42] to-[#66696e] w-full p-2 rounded-3xl h-full flex flex-col ">
                 <div className="  rounded-xl h-full ">
-                  <div className=" w-12 h-12 bg-[#fff] rounded-full text-[#242529] flex justify-center items-center">
+                  <div className=" w-12 h-12 bg-white rounded-full text-[#242529] flex justify-center items-center">
                     🔎
                   </div>
                 </div>
@@ -94,7 +94,7 @@ export default function HomeBase() {
             {transactions.map((item, index) => (
               <div
                 key={item.out_no}
-                className="rounded-full p-1.5 bg-[#f9f8fd] hover:bg-[#fff] hover:scale-105 transition-all cursor-pointer duration-200"
+                className="rounded-full p-1.5 bg-[#f9f8fd] hover:bg-white hover:scale-105 transition-all cursor-pointer duration-200"
               >
                 <div className="flex items-center">
                   {/* Icon */}

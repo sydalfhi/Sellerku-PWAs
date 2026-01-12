@@ -1,14 +1,38 @@
-import { MockTransactionsDetail } from "@/_mock/transaksi";
+import { MockTransactionssDetail } from "@/_mock/transaksi";
 import { formatTanggal } from "@/utils/dateFormate";
 import { formatCurrency } from "@/utils/formatCurrency";
-import React from "react";
+import React, { useEffect } from "react";
+import { useActivityDetail } from "../hooks/useActivity";
+import Loading from "@/components/fragments/Loadin";
+import Error from "@/components/fragments/Error";
 
 export default function ActivityDetailBase({
   outNo,
 }: {
   outNo: string | undefined;
 }) {
-  const mockDetailActivity = MockTransactionsDetail;
+  useEffect(() => {
+    console.log("outNo:", outNo);
+  }, [outNo]);
+
+  const {
+    data: transactions,
+    isLoading,
+    isError,
+    error,
+  } = useActivityDetail(outNo || "");
+
+  if (isLoading) {
+    return (
+      <Loading fullScreen={true} message="Loading transaction details..." />
+    );
+  }
+
+  if (isError) {
+    // Extract status code dari error React Query
+    const statusCode = (error as any)?.response?.status;
+    return <Error statusCode={statusCode} fullScreen={true} />;
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -35,22 +59,22 @@ export default function ActivityDetailBase({
                     No. Transaksi:
                   </span>
                   <span className="text-lg font-regular text[#1e1e1e]">
-                    {mockDetailActivity.out_no}
+                    {transactions.out_no}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="text[#1e1e1e]/90">
-                    {formatTanggal(mockDetailActivity?.out_date)}
+                    {formatTanggal(transactions?.out_date)}
                   </span>
                   <span className="px-3 py-1 rounded-full text-xs font-medium bg-[#ffecba] text-[#92400e]">
-                    {mockDetailActivity?.cust_name || "Umum"}
+                    {transactions?.cust_name || "Umum"}
                   </span>
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                      mockDetailActivity?.status
+                      transactions?.status
                     )}`}
                   >
-                    {mockDetailActivity?.status}
+                    {transactions?.status}
                   </span>
                 </div>
               </div>
@@ -82,7 +106,7 @@ export default function ActivityDetailBase({
                   </tr>
                 </thead>
                 <tbody>
-                  {mockDetailActivity.details.map((item, index) => (
+                  {transactions.details.map((item, index) => (
                     <tr
                       key={index}
                       className="border-b border-[#efecff] hover:bg-gray-50"
@@ -125,19 +149,19 @@ export default function ActivityDetailBase({
                 <div className="flex justify-between text-[#37393d]">
                   <span>Total Harga</span>
                   <span className="font-light text-sm">
-                    {formatCurrency(mockDetailActivity.total_price)}
+                    {formatCurrency(transactions.total_price)}
                   </span>
                 </div>
                 <div className="flex justify-between text-[#37393d]">
                   <span>Diskon Total</span>
                   <span className="font-light text-sm text-[##ff7075]">
-                    -{formatCurrency(mockDetailActivity.discount_total)}
+                    -{formatCurrency(transactions.discount_total)}
                   </span>
                 </div>
                 <div className="flex justify-between text-[#37393d]">
                   <span>PPN</span>
                   <span className="font-light text-sm">
-                    {formatCurrency(mockDetailActivity.ppn)}
+                    {formatCurrency(transactions.ppn)}
                   </span>
                 </div>
                 <div className="flex justify-between pt-3 border-t border-[#efecff]">
@@ -145,7 +169,7 @@ export default function ActivityDetailBase({
                     Total Bayar
                   </span>
                   <span className="font-medium text-lg text-[#1e1e1e]">
-                    {formatCurrency(mockDetailActivity.totalbayar)}
+                    {formatCurrency(transactions.totalbayar)}
                   </span>
                 </div>
                 <div className="flex justify-between  border-[#efecff]">
@@ -153,13 +177,13 @@ export default function ActivityDetailBase({
                     Grand Total
                   </span>
                   <span className="font-medium text-lg text-[#1e1e1e]">
-                    {formatCurrency(mockDetailActivity.grand_total)}
+                    {formatCurrency(transactions.grand_total)}
                   </span>
                 </div>
                 <div className="flex justify-between pt-3 border-t border-[#efecff]">
                   <span className="font-medium text-[#1e1e1e]">Kembalian</span>
                   <span className="font-medium text-lg text-[#1e1e1e]">
-                    {formatCurrency(mockDetailActivity.kembalian)}
+                    {formatCurrency(transactions.kembalian)}
                   </span>
                 </div>
               </div>

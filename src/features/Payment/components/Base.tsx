@@ -1,23 +1,39 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useTransactionStore } from "@/features/Cart/store/transactionStore";
+import { useShallow } from "zustand/shallow";
 
 export default function PaymentBase() {
-  const totalBelanja = 55000;
   const presetAmounts = [2000, 5000, 10000, 20000, 50000, 100000];
 
-  const [paidAmount, setPaidAmount] = useState<number>(0);
+  const [cart, diskonSubtotal, ppn, paidAmount, setPaidAmount] =
+    useTransactionStore(
+      useShallow((state) => [
+        state.cart,
+        state.diskonSubtotal,
+        state.ppn,
+        state.paidAmount,
+        state.setPaidAmount,
+      ])
+    );
+
+  const totalSubtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
+  const totalFinal = totalSubtotal - diskonSubtotal + ppn;
+  const totalBelanja = totalFinal;
 
   const change = paidAmount - totalBelanja;
 
   // ✅ preset DIGABUNG
   const handlePresetClick = (amount: number) => {
-    setPaidAmount((prev) => prev + amount);
+    // Bisa pakai cara ini
+    setPaidAmount(paidAmount + amount);
   };
 
   const handleManualInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "");
-    setPaidAmount(value === "" ? 0 : Number(value));
+    const numericValue = value === "" ? 0 : Number(value);
+    setPaidAmount(numericValue);
   };
 
   const handleReset = () => {

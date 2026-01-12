@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+
 import HomePage from "@/pages/Home";
 import CatalogPage from "@/pages/Catalog";
 import ActivityPage from "@/pages/Activity";
@@ -8,28 +9,45 @@ import NotFound from "@/pages/NotFound";
 import Cartpage from "@/pages/Cart";
 import PaymentPage from "@/pages/Payment";
 import WelcomePage from "@/pages/Welcome";
-import LoginPage from "@/pages/auth/Login";
+import LoginPage from "@/pages/Login";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+import { RequireAuth, GuestOnly } from "@/middleware/authMiddleware";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import BarcodeScanPage from "./pages/BarcodeScan";
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <Routes>
-      {/* default page */}
-      <Route path="/" element={<WelcomePage />} />
+    <QueryClientProvider client={queryClient}>
+      <Routes>
+        {/* public */}
+        <Route path="/" element={<WelcomePage />} />
 
-      {/* auth */}
-      <Route path="/auth/login" element={<LoginPage />} />
+        {/* guest only */}
+        <Route element={<GuestOnly />}>
+          <Route path="/auth/login" element={<LoginPage />} />
+        </Route>
 
-      <Route path="/home" element={<HomePage />} />
-      <Route path="/catalog" element={<CatalogPage />} />
-      <Route path="/activity" element={<ActivityPage />} />
-      <Route path="/activity/:id" element={<ActivityDetailPage />} />
-      <Route path="/setting" element={<SettingsPage />} />
-      <Route path="/cart" element={<Cartpage />} />
-      <Route path="/payment" element={<PaymentPage />} />
+        {/* protected */}
+        <Route element={<RequireAuth />}>
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/activity" element={<ActivityPage />} />
+          <Route path="/activity/:id" element={<ActivityDetailPage />} />
+          <Route path="/setting" element={<SettingsPage />} />
+          <Route path="/cart" element={<Cartpage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/barcode-scan" element={<BarcodeScanPage />} />
+        </Route>
 
-      {/* 404 */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <ReactQueryDevtools position="right" />
+    </QueryClientProvider>
   );
 }
 

@@ -1,14 +1,28 @@
-// components/ActivityBase.tsx
-
-import { MockTransactionsActivity } from "@/_mock/transaksi";
 import { formatTanggal } from "@/utils/dateFormate";
 import { Link } from "react-router-dom";
+import { useActivity } from "../hooks/useActivity";
+import { useTransactionStatus } from "../store/useTransactionStatus";
+import type { Activity } from "@/types/activity.types";
 
 export default function ActivityBase() {
-  const transactions = MockTransactionsActivity;
+  const { status, setStatus } = useTransactionStatus();
+  const { data: transactions = [] , isLoading, isError, error } = useActivity(status);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  const categories = [
+    { label: "Selesai", value: 0 },
+    { label: "Pending", value: 1 },
+  ] as const;
 
   // Group berdasarkan tanggal
-  const grouped: Record<string, typeof transactions> = {};
+  const grouped:  Record<string, Activity[]>  = {};
   transactions.forEach((tx) => {
     const date = tx.out_date;
     if (!grouped[date]) grouped[date] = [];
@@ -28,17 +42,20 @@ export default function ActivityBase() {
           </div>
 
           <div className="mb-5 overflow-x-auto pb-2 no-scrollbar">
-            <div className="flex gap-2 min-w-max">
-              {["Semua", "Selesai", "Pending"].map((cat, i) => (
+            <div className="flex gap-2">
+              {categories.map((cat) => (
                 <button
-                  key={cat}
-                  className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                    i == 0
-                      ? "bg-[#37393d] text-white"
-                      : "bg-white text-[#37393d] hover:bg-[#37393d]/10 border border-[#efecff]"
-                  }`}
+                  key={cat.value}
+                  onClick={() => setStatus(cat.value)}
+                  className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors
+            ${
+              status === cat.value
+                ? "bg-[#37393d] text-white"
+                : "bg-white text-[#37393d] hover:bg-[#37393d]/10 border border-[#efecff]"
+            }
+          `}
                 >
-                  {cat}
+                  {cat.label}
                 </button>
               ))}
             </div>
@@ -59,7 +76,7 @@ export default function ActivityBase() {
                   {txs.map((tx, i) => (
                     <div
                       key={tx.out_no}
-                      className="rounded-full p-1.5 bg-[#f9f8fd] focus:bg-[#fff] focus:scale-105 transition-all cursor-pointer duration-200"
+                      className="rounded-full p-1.5 bg-[#f9f8fd] focus:bg-white focus:scale-105 transition-all cursor-pointer duration-200"
                     >
                       <Link to={`/activity/${tx.out_no}`}>
                         <div className="flex items-center">
