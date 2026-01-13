@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { useTransactionStore } from "@/features/Cart/store/transactionStore";
+import { useTransactionStore, selectCartTotal } from "@/features/Cart/store/transactionStore";
 import { useShallow } from "zustand/shallow";
 import { useCategory } from "../hooks/useCategory";
 import { useCategoryStore } from "../store/categoryStore";
@@ -12,19 +12,19 @@ import Loading from "@/components/fragments/Loadin";
 import type { CatalogItem } from "@/types/catalog.type";
 
 export default function CatalogPage() {
-  const [inputValue, setInputValue] = useState(""); // state input langsung
-  const [debouncedValue, setDebouncedValue] = useState(""); // state yang terupdate setelah debounce
+  const [inputValue, setInputValue] = useState("");
+  const [debouncedValue, setDebouncedValue] = useState("");
   const email = "ytumbalkasir@gmail.com";
 
-  // Pindahkan semua hook ke atas tanpa kondisi
+  // Category Store
   const { selectedCategory, setSelectedCategory } = useCategoryStore();
 
   const { data: categoriesData = [], isLoading: isCategoryLoading } =
     useCategory(email);
 
-  // Tambahkan "Semua" sebagai kategori default
   const categories = [{ cat_id: "0", cat_name: "Semua" }, ...categoriesData];
-  // ============END CATEGORY======================
+
+  // Catalog
   const { data: catalogsData = [], isLoading: isCatalogLoading } = useCatalog({
     email,
     cat_id: selectedCategory.cat_id,
@@ -33,30 +33,44 @@ export default function CatalogPage() {
 
   const products: CatalogItem[] = catalogsData;
 
-  // ================
-  // Ambil fungsi addToCart dan cart total dari Zustand
+  // Transaction Store - ambil addToCart dan cart
   const [addToCart, cart] = useTransactionStore(
-    useShallow((state) => [state?.addToCart, state?.cart])
+    useShallow((state) => [state.addToCart, state.cart])
   );
 
-  // Hitung total belanja
-  const totalBelanja = cart.reduce((acc, item) => acc + item.subtotal, 0);
+  // Atau gunakan selector untuk performa lebih baik
+  const totalBelanja = useTransactionStore(selectCartTotal);
 
+  // Set default category
   useEffect(() => {
     setSelectedCategory({ cat_id: "0", cat_name: "Semua" });
   }, [setSelectedCategory]);
 
-  // useEffect untuk handle debounce
+  // Debounce search
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedValue(inputValue); // update state setelah 1 detik
-    }, 1000); // 1000ms = 1 detik
+      setDebouncedValue(inputValue);
+    }, 1000);
 
-    // clear timeout jika inputValue berubah sebelum 1 detik
     return () => {
       clearTimeout(handler);
     };
   }, [inputValue]);
+
+  // Handler untuk add to cart
+  const handleAddToCart = (product: CatalogItem) => {
+    addToCart(
+      {
+        mtrl_code: product.mtrl_code,
+        mtrl_name: product.mtrl_name,
+        cat_name: product.cat_name,
+        sell_price: Number(product.sell_price),
+        stock: Number(product.stock),
+        satuan: product.satuan,
+      },
+      1
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col mb-40">
@@ -134,10 +148,11 @@ export default function CatalogPage() {
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#d7d0fe]"></div>
           </div>
         )}
+
         {/* Kategori horizontal scroll */}
         <div className="mb-5 overflow-x-auto pb-2 no-scrollbar">
           <div className="flex gap-2 min-w-max">
-            {isCategoryLoading ||
+            {!isCategoryLoading &&
               categories.map((cat) => (
                 <button
                   key={cat.cat_id}
@@ -154,11 +169,7 @@ export default function CatalogPage() {
           </div>
         </div>
 
-        {isCatalogLoading && (
-          <>
-            <Loading />
-          </>
-        )}
+        {isCatalogLoading && <Loading />}
 
         {/* List Produk Vertikal */}
         <div className="grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
@@ -190,18 +201,9 @@ export default function CatalogPage() {
 
               return (
                 <div
-                  key={index}
+                  key={product.mtrl_code}
                   className="bg-white rounded-xl overflow-hidden border border-[#efecff] cursor-pointer flex hover:shadow-md transition"
-                  onClick={() =>
-                    addToCart(
-                      {
-                        ...product,
-                        sell_price: Number(product.sell_price),
-                        stock: Number(product.stock), // konversi stock juga
-                      },
-                      1
-                    )
-                  }
+                  onClick={() => handleAddToCart(product)}
                 >
                   {/* Kotak di kiri dengan warna dinamis */}
                   <div
@@ -216,10 +218,13 @@ export default function CatalogPage() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
                         <h3 className="font-semibold text-[#1e1e1e] text-base leading-tight">
-                          {product.cat_name}
+                          {product.mtrl_name}
                         </h3>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {product.cat_name}
+                        </p>
                         <p className="text-sm text-gray-600 mt-1">
-                          {product.sell_price == "0"
+                          {product.sell_price === "0"
                             ? "Gratis"
                             : `${formatCurrency(product.sell_price)}`}
                           <span className="text-xs text-gray-500 ml-1">
@@ -229,14 +234,20 @@ export default function CatalogPage() {
                       </div>
 
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <p className="text-xs text-green-600 font-medium">
+                        <p
+                          className={`text-xs font-medium ${
+                            Number(product.stock) > 0
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}
+                        >
                           Stok: {product.stock}
                         </p>
-                        {/* {product.stock > 0 && (
+                        {Number(product.stock) === 0 && (
                           <span className="text-xs font-light text-[#f57772]">
                             habis
                           </span>
-                        )} */}
+                        )}
                       </div>
                     </div>
                   </div>
@@ -258,7 +269,7 @@ export default function CatalogPage() {
             </div>
             <Link to="/cart">
               <Button className="bg-[#d7d0fe] hover:bg-[#c5befe] text-[#1e1e1e] font-semibold px-8 rounded-full">
-                + Keranjang
+                + Keranjang ({cart.length})
               </Button>
             </Link>
           </div>

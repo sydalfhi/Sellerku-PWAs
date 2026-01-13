@@ -2,16 +2,33 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/auth.store";
 import Tabbar from "@/components/fragments/Tabbar";
+import { useTransactionStore } from "@/features/Cart/store/transactionStore";
+import { useShallow } from "zustand/shallow";
+
 export default function SettingsPage() {
   const [showModal, setShowModal] = useState(false);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout(); // hapus user & isAuthenticated
-    navigate("/auth/login", { replace: true });
-  };
+const [clearTransaction, clearCart] = useTransactionStore(
+  useShallow((state) => [state.clearTransaction, state.clearCart]),
+);
 
+const handleLogout = () => {
+  // 1. Clear transaction & cart dulu
+  clearTransaction();
+  clearCart();
+  
+  // 2. Logout (hapus auth state)
+  logout();
+  
+  // 3. TAMBAHKAN: Clear localStorage secara manual
+  localStorage.removeItem('transaction'); // sesuaikan dengan key Anda
+  localStorage.removeItem('auth-storage'); // jika ada
+  
+  // 4. Navigate ke login
+  navigate("/auth/login", { replace: true });
+};
   return (
     <div className="min-h-screen  relative">
       <Tabbar />

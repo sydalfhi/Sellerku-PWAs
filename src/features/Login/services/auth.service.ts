@@ -1,28 +1,31 @@
 import type { LoginFormValues } from "@/schemas/login.schema";
 import axios from "axios";
-
+import qs from "qs"; 
 
 export const loginUser = async (loginData: LoginFormValues) => {
   try {
     const url = `${import.meta.env.VITE_BASE_URL}/login`;
 
-    // pakai URLSearchParams untuk x-www-form-urlencoded
-    const payload = new URLSearchParams();
-    payload.append("email", loginData.email);
-    payload.append("password", loginData.password);
-
-    const response = await axios.post(url, payload.toString(), {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
-
+    const response = await axios.post(
+      url,
+      qs.stringify({
+        email: loginData.email,
+        password: loginData.password,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+    
     return response.data;
   } catch (error: any) {
     console.error("Login failed:", error.response?.data || error.message);
     throw error;
   }
 };
+
 
 
 // export const loginUser = async (loginData: LoginFormValues) => {

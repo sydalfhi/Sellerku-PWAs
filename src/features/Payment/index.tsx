@@ -1,5 +1,4 @@
-import React from "react";
-import PaymentBase from "./components/base";
+import PaymentBase from "./components/Base";
 
 export default function PaymentFeature() {
   return (

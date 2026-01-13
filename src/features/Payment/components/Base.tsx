@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTransactionStore } from "@/features/Cart/store/transactionStore";
 import { useShallow } from "zustand/shallow";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function PaymentBase() {
   const presetAmounts = [2000, 5000, 10000, 20000, 50000, 100000];
@@ -42,7 +43,6 @@ export default function PaymentBase() {
 
   const handlePay = () => {
     alert("Pembayaran berhasil!");
-    // di sini nanti bisa kirim ke API / print struk / dll
   };
 
   return (
@@ -55,9 +55,11 @@ export default function PaymentBase() {
 
           <div className="bg-[#efecfa] p-5 text-center">
             <p className="text-sm text-gray-600">Total Belanja</p>
+    <button className="cursor-pointer hover:scale-[1.25] transition-all duration-300" onClick={() => handlePresetClick(totalBelanja)}>
             <p className="text-3xl font-bold text-[#1e1e1e]">
-              Rp {totalBelanja.toLocaleString("id-ID")}
+              {formatCurrency(String(totalBelanja))}
             </p>
+    </button>
           </div>
 
           <div className="w-full h-px bg-gray-300" />
@@ -71,7 +73,7 @@ export default function PaymentBase() {
                 className="h-12 font-medium bg-[#efecff] border-[#efecff]"
                 onClick={() => handlePresetClick(amount)}
               >
-                Rp {amount.toLocaleString("id-ID")}
+                {formatCurrency(String(amount))}
               </Button>
             ))}
           </div>
@@ -83,7 +85,7 @@ export default function PaymentBase() {
             </label>
             <Input
               type="text"
-              value={paidAmount.toLocaleString("id-ID")}
+              value={formatCurrency(String(paidAmount))}
               onChange={handleManualInput}
               placeholder="0"
               className="text-lg font-medium text-center h-14"

@@ -4,17 +4,35 @@ import { useActivity } from "../hooks/useActivity";
 import { useTransactionStatus } from "../store/useTransactionStatus";
 import type { Activity } from "@/types/activity.types";
 
+
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Komponen untuk menampilkan riwayat transaksi
+ * 
+ * @param {string} status - status transaksi yang ingin ditampilkan
+ * @param {Record<string, Activity[]>} grouped - objek yang berisi riwayat transaksi yang sudah di group
+ * @returns {JSX.Element} element yang menampilkan riwayat transaksi
+ */
+
 export default function ActivityBase() {
   const { status, setStatus } = useTransactionStatus();
-  const { data: transactions = [] , isLoading, isError, error } = useActivity(status);
+  const { data: transactions = [], isLoading, isError, error } = useActivity({
+    email: "testingkasir@gmail.com",
+    status
+  });
 
   if (isLoading) {
     return <p>Loading...</p>;
   }
 
   if (isError) {
-    return <p>Error: {error.message}</p>;
+    return <p>Error: {error?.message || 'Something went wrong'}</p>;
   }
+
+  if (transactions.length === 0) {
+    return <p>Tidak ada transaksi.</p>;
+  }
+
 
   const categories = [
     { label: "Selesai", value: 0 },
@@ -22,7 +40,7 @@ export default function ActivityBase() {
   ] as const;
 
   // Group berdasarkan tanggal
-  const grouped:  Record<string, Activity[]>  = {};
+  const grouped: Record<string, Activity[]> = {};
   transactions.forEach((tx) => {
     const date = tx.out_date;
     if (!grouped[date]) grouped[date] = [];
@@ -48,11 +66,10 @@ export default function ActivityBase() {
                   key={cat.value}
                   onClick={() => setStatus(cat.value)}
                   className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors
-            ${
-              status === cat.value
-                ? "bg-[#37393d] text-white"
-                : "bg-white text-[#37393d] hover:bg-[#37393d]/10 border border-[#efecff]"
-            }
+            ${status === cat.value
+                      ? "bg-[#37393d] text-white"
+                      : "bg-white text-[#37393d] hover:bg-[#37393d]/10 border border-[#efecff]"
+                    }
           `}
                 >
                   {cat.label}
