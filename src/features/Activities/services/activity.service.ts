@@ -9,17 +9,16 @@ export const getActivities = async (
       `/trans?email=${email}&is_pending=${status}`
     )
 
-    // Cek apakah success dan ada data
     if (response.data.success && response.data.data) {
       return response.data.data
     }
 
-    // Jika tidak success atau data kosong, return array kosong
+
     return []
   } catch (error: any) {
-    // Handle error response (404, dll)
+
     if (error.response?.data?.metadata?.code === 404) {
-      return [] // Return empty array untuk data tidak ditemukan
+      return []
     }
 
     throw error

@@ -3,9 +3,9 @@ import { getActivityDetail } from "../services/activityDetail.service";
 
 
 
-export const useActivityDetail = (outNo: string) => {
+export const useActivityDetail = ({ email, outNo }: { email: string, outNo: string | undefined }) => {
     return useQuery({
-        queryKey: ["activity_detail", outNo],
-        queryFn: () => getActivityDetail(outNo),
+        queryKey: ["activity_detail", email, outNo],
+        queryFn: () => getActivityDetail({ email, outNo }),
     });
 };

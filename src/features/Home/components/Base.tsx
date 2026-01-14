@@ -1,18 +1,27 @@
-import { MockTransactionsActivity } from "@/_mock/transaksi";
 import { formatTanggal } from "@/utils/dateFormate";
+import { getStoredUserData } from "@/utils/getStoredUser";
 import { getGreeting } from "@/utils/greeting";
 import { Link } from "react-router-dom";
+import { useRecentActivity } from "../hooks/useRecentActivity";
+import LoadingSpinner from "@/components/fragments/LoadingSpinner";
 // import { useRecentActivity } from "../hooks/useRecentActivity";
 
 export default function HomeBase() {
-  const transactions = MockTransactionsActivity;
+  const userData = getStoredUserData();
+
+  // const transactions = MockTransactionsActivity;
   const iconBgColors: string[] = ["#d7d0fe", "#ffecba", "#efecfa"];
 
-  let nameCashier = "Syaid";
+  let nameCashier = userData?.emp_name ?? "Kasir";
   let greeting = getGreeting();
-  // const [data] = useRecentActivity("testingkasir@gmail.com");
 
-  // console.info(data);
+  const {
+    data: transactions,
+    isLoading,
+    isError,
+    error,
+  } = useRecentActivity(userData?.email || "");
+
   return (
     <div className="p-4 md:p-6">
       {/* Salam pengguna */}
@@ -86,7 +95,7 @@ export default function HomeBase() {
         <div className="mt-10">
           <div className="flex justify-between">
             <h3 className="text-xl font-semibold text-[#1e1e1e] mb-2">
-              Recent Search
+              Transaksi Terakhir
             </h3>
             <Link to="/activity">
               <span className="underline decoration-wavy underline-offset-4 decoration-[#1e1e1e]">
@@ -95,51 +104,80 @@ export default function HomeBase() {
             </Link>
           </div>
           <div className="space-y-2">
-            {transactions.map((item, index) => (
-              <div
-                key={item.out_no}
-                className="rounded-full p-1.5 bg-[#f9f8fd] hover:bg-white hover:scale-105 transition-all cursor-pointer duration-200"
-              >
-                <div className="flex items-center">
-                  {/* Icon */}
-                  <div className="mr-3">
-                    <div
-                      className="rounded-full w-12 h-12 flex items-center justify-center transition-colors"
-                      style={{
-                        backgroundColor:
-                          iconBgColors[index % iconBgColors.length], // bergilir sesuai array
-                      }}
-                    >
-                      <span
-                        className="text-2xl font-bold"
-                        style={{ color: item.iconColor }}
+            {isLoading && (
+              <div className="w-full min-h-25 flex flex-col items-center justify-center">
+                <LoadingSpinner />
+                <p className="text-gray-600 text-sm mt-2">Loading...</p>
+              </div>
+            )}
+
+            {isError && (
+              <div className="w-full min-h-25 flex items-center justify-center bg-red-50 p-4 rounded">
+                <p className="text-red-600 text-sm">
+                  {error instanceof Error
+                    ? `Error: ${error.message}`
+                    : "Terjadi kesalahan"}
+                </p>
+              </div>
+            )}
+
+            {!isLoading &&
+              !isError &&
+              transactions &&
+              transactions.length == 0 && (
+                <div className="w-full min-h-25 flex items-center justify-center bg-red-50 p-4 rounded">
+                  <p className="text-[#1e1e1e] text-sm">Tidak ada transaksi</p>
+                </div>
+              )}
+
+            {!isLoading &&
+              !isError &&
+              transactions &&
+              transactions.map((item, index) => (
+                <div
+                  key={`${item.out_no} ${index}`}
+                  className="rounded-full p-1.5 bg-[#f9f8fd] hover:bg-white hover:scale-105 transition-all cursor-pointer duration-200"
+                >
+                  <div className="flex items-center">
+                    {/* Icon */}
+                    <div className="mr-3">
+                      <div
+                        className="rounded-full w-12 h-12 flex items-center justify-center transition-colors"
+                        style={{
+                          backgroundColor:
+                            iconBgColors[index % iconBgColors.length], // bergilir sesuai array
+                        }}
                       >
-                        ⌘
-                      </span>
+                        <span
+                          className="text-2xl font-bold"
+                          style={{ color: item.iconColor }}
+                        >
+                          ⌘
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Text */}
-                  <div className="flex-1">
-                    <p className="text-foreground font-medium">
-                      {item.cust_name}
-                    </p>
-                    <p className="text-foreground font-light text-xs">
-                      {formatTanggal(item.out_date)}
-                    </p>
-                  </div>
+                    {/* Text */}
+                    <div className="flex-1">
+                      <p className="text-foreground font-medium">
+                        {item.cust_name}
+                      </p>
+                      <p className="text-foreground font-light text-xs">
+                        {formatTanggal(String(item.out_date))}
+                      </p>
+                    </div>
 
-                  {/* Action Icon */}
-                  <div className="ml-3">
-                    <div className="rounded-full w-12 h-12 flex items-center justify-center">
-                      <span className="text-foreground text-xl font-bold">
-                        ∘∘∘
-                      </span>
+                    {/* Action Icon */}
+                    <div className="ml-3">
+                      <div className="rounded-full w-12 h-12 flex items-center justify-center">
+                        <span className="text-foreground text-xl font-bold">
+                          ∘∘∘
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </section>

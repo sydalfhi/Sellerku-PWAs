@@ -1,4 +1,3 @@
-import React from "react";
 import Tabbar from "@/components/fragments/Tabbar";
 import ActivityBase from "./components/Base";
 

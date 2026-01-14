@@ -1,17 +1,14 @@
 import axiosInstance from "@/api/axiosInstance";
-import type { GetRecentActivityResponse } from "@/types/recentActivity.type";
+import type { GetRecentActivityResponse, Transaction } from "@/types/recentActivity.type";
 
 
 
 export const getRecentActivity = async (
   email: string
-): Promise<[]> => {
+): Promise<Transaction[]> => {
   try {
     const response = await axiosInstance.get<GetRecentActivityResponse>(
-      `/transnew/transnew`,
-      {
-        params: { email },
-      }
+      `/trans/transnew?email=${email}`
     );
 
     if (response.data.success) {
@@ -20,7 +17,8 @@ export const getRecentActivity = async (
 
     throw new Error("Gagal mengambil Data Transaksi");
   } catch (error) {
-    console.error("getCategories error:", error);
+    console.error("getRecentActivity error:", error);
     throw error;
   }
 };
+

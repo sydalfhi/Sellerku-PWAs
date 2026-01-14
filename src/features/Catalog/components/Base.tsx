@@ -152,9 +152,9 @@ export default function CatalogPage() {
         <div className="mb-5 overflow-x-auto pb-2 no-scrollbar">
           <div className="flex gap-2 min-w-max">
             {!isCategoryLoading &&
-              categories.map((cat) => (
+              categories.map((cat, index) => (
                 <button
-                  key={cat.cat_id}
+                  key={index}
                   onClick={() => setSelectedCategory(cat)}
                   className={`cursor-pointer px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                     selectedCategory.cat_id === cat.cat_id

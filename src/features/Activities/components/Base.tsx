@@ -5,9 +5,12 @@ import { useTransactionStatus } from "../store/useTransactionStatus";
 import type { Activity } from "@/types/activity.types";
 import Loading from "@/components/fragments/Loadin";
 import Error from "@/components/fragments/Error";
-import DebugStringify from "@/components/fragments/DebugStringify";
+import { getStoredUserData } from "@/utils/getStoredUser";
 
 export default function ActivityBase() {
+  const userData = getStoredUserData();
+
+  let email = userData?.email ?? "";
   const { status, setStatus } = useTransactionStatus();
   const {
     data: transactions = [],
@@ -15,7 +18,7 @@ export default function ActivityBase() {
     isError,
     error,
   } = useActivity({
-    email: "testingkasir@gmail.com",
+    email,
     status,
   });
 
