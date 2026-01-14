@@ -12,16 +12,18 @@ import WelcomePage from "@/pages/Welcome";
 import LoginPage from "@/pages/Login";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import { RequireAuth, GuestOnly } from "@/middleware/authMiddleware";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BarcodeScanPage from "./pages/BarcodeScan";
+import { Toaster } from "react-hot-toast";
+import { GuestOnly, RequireAuth } from "./middleware/authMiddleware";
 
 function App() {
   const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <Toaster position="top-center" reverseOrder={false} />
+
       <Routes>
         {/* public */}
         <Route path="/" element={<WelcomePage />} />

@@ -9,12 +9,12 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: loginUser,
 
-    onMutate: () => {
-      toast.loading("Loading...", { id: "login-toast" });
-    },
+    // onMutate: () => {
+    //   toast.loading("Loading...", { id: "login-toast" });
+    // },
 
     onSuccess: (data) => {
-      loginStore(data.response);
+      loginStore(data);
     },
 
     onError: (error: any) => {

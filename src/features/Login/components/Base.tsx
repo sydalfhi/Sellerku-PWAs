@@ -6,7 +6,6 @@ import type { LoginFormValues } from "@/schemas/login.schema";
 import { useLogin } from "../hooks/useLogin";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
 
 export default function LoginBase() {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,14 +24,14 @@ export default function LoginBase() {
   const onSubmit = async (data: LoginFormValues) => {
     await mutateAsync(data);
 
-    const from = location.state?.from?.pathname || "/home";
+    return;
+    // const from = location.state?.from?.pathname || "/home";
 
-    navigate(from, { replace: true });
+    // navigate(from, { replace: true });
   };
 
   return (
     <div className="mt-[10vh] flex items-center justify-center p-4">
-      <Toaster position="top-center" reverseOrder={false} />
       <div className="w-full max-w-md">
         {/* Login Card */}
         <div className="rounded-2xl p-4">

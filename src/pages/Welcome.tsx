@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const WelcomePage = () => {
@@ -9,11 +8,11 @@ const WelcomePage = () => {
   };
 
   return (
-    <div className="h-screen -mt-20 md:mt-0 overflow-hidden relative bg-gradient-to-br from-[#efecfa] via-[#ffffff] to-[#d7d0fe]">
+    <div className="h-screen -mt-20 md:mt-0 overflow-hidden relative bg-linear-to-br from-[#efecfa] via-[#ffffff] to-[#d7d0fe]">
       {/* Background elements - lebih sederhana */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-gradient-to-r from-[#d7d0fe] to-[#ffecba] opacity-20 blur-3xl"></div>
-        <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-gradient-to-r from-[#ffecba] to-[#efecfa] opacity-20 blur-3xl"></div>
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-linear-to-r from-[#d7d0fe] to-[#ffecba] opacity-20 blur-3xl"></div>
+        <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-linear-to-r from-[#ffecba] to-[#efecfa] opacity-20 blur-3xl"></div>
       </div>
 
       <div className="relative  z-10 h-full flex items-center justify-center px-4">
@@ -92,13 +91,13 @@ const WelcomePage = () => {
                   {/* Header mockup */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#d7d0fe] to-[#ffecba]"></div>
+                      <div className="w-8 h-8 rounded-lg bg-linear-to-r from-[#d7d0fe] to-[#ffecba]"></div>
                       <div className="ml-3">
                         <div className="w-20 h-3 bg-[#efecff] rounded-full"></div>
                         <div className="w-16 h-2 bg-[#efecff] rounded-full mt-1"></div>
                       </div>
                     </div>
-                    <div className="w-12 h-6 bg-gradient-to-r from-[#ffecba] to-[#ff7075] rounded-lg"></div>
+                    <div className="w-12 h-6 bg-linear-to-r from-[#ffecba] to-[#ff7075] rounded-lg"></div>
                   </div>
 
                   {/* Transaction section */}
@@ -131,7 +130,7 @@ const WelcomePage = () => {
                     <div className="pt-4 border-t border-[#efecfa]">
                       <div className="flex justify-between items-center">
                         <div className="w-16 h-4 bg-[#37393d] rounded-full"></div>
-                        <div className="w-20 h-6 bg-gradient-to-r from-[#ff7075] to-[#d7d0fe] rounded-lg"></div>
+                        <div className="w-20 h-6 bg-linear-to-r from-[#ff7075] to-[#d7d0fe] rounded-lg"></div>
                       </div>
                     </div>
                   </div>
@@ -139,13 +138,13 @@ const WelcomePage = () => {
                   {/* Action buttons */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="h-10 bg-[#efecfa] rounded-lg"></div>
-                    <div className="h-10 bg-gradient-to-r from-[#d7d0fe] to-[#ff7075] rounded-lg"></div>
+                    <div className="h-10 bg-linear-to-r from-[#d7d0fe] to-[#ff7075] rounded-lg"></div>
                   </div>
                 </div>
 
                 {/* Floating elements */}
-                <div className="absolute -top-4 -right-4 w-20 h-20 rounded-xl bg-gradient-to-br from-[#ffecba] to-[#ffffff] opacity-80 shadow-lg rotate-6"></div>
-                <div className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-gradient-to-br from-[#d7d0fe] to-[#efecfa] opacity-70 shadow-lg -rotate-6"></div>
+                <div className="absolute -top-4 -right-4 w-20 h-20 rounded-xl bg-linear-to-br from-[#ffecba] to-[#ffffff] opacity-80 shadow-lg rotate-6"></div>
+                <div className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-linear-to-br from-[#d7d0fe] to-[#efecfa] opacity-70 shadow-lg -rotate-6"></div>
               </div>
             </div>
           </div>
