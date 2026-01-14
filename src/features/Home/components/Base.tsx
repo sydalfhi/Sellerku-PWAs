@@ -2,13 +2,17 @@ import { MockTransactionsActivity } from "@/_mock/transaksi";
 import { formatTanggal } from "@/utils/dateFormate";
 import { getGreeting } from "@/utils/greeting";
 import { Link } from "react-router-dom";
+// import { useRecentActivity } from "../hooks/useRecentActivity";
 
 export default function HomeBase() {
   const transactions = MockTransactionsActivity;
-  const iconBgColors : string[] = ["#d7d0fe", "#ffecba", "#efecfa"];
+  const iconBgColors: string[] = ["#d7d0fe", "#ffecba", "#efecfa"];
 
   let nameCashier = "Syaid";
   let greeting = getGreeting();
+  // const [data] = useRecentActivity("testingkasir@gmail.com");
+
+  // console.info(data);
   return (
     <div className="p-4 md:p-6">
       {/* Salam pengguna */}

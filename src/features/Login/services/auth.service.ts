@@ -1,6 +1,6 @@
 import type { LoginFormValues } from "@/schemas/login.schema";
 import axios from "axios";
-import qs from "qs"; 
+import qs from "qs";
 
 export const loginUser = async (loginData: LoginFormValues) => {
   try {
@@ -18,8 +18,13 @@ export const loginUser = async (loginData: LoginFormValues) => {
         },
       }
     );
-    
-    return response.data;
+
+    const data = response.data;
+    if (!data.success) {
+      throw new Error(data.metadata?.message || "Login gagal");
+    }
+
+    return data;
   } catch (error: any) {
     console.error("Login failed:", error.response?.data || error.message);
     throw error;

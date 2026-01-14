@@ -2,14 +2,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { useTransactionStore, selectCartTotal } from "@/features/Cart/store/transactionStore";
+import {
+  useTransactionStore,
+  selectCartTotal,
+} from "@/features/Cart/store/transactionStore";
 import { useShallow } from "zustand/shallow";
 import { useCategory } from "../hooks/useCategory";
 import { useCategoryStore } from "../store/categoryStore";
 import { useEffect, useState } from "react";
 import { useCatalog } from "../hooks/useCatalog";
-import Loading from "@/components/fragments/Loadin";
 import type { CatalogItem } from "@/types/catalog.type";
+import LoadingSpinner from "@/components/fragments/LoadingSpinner";
 
 export default function CatalogPage() {
   const [inputValue, setInputValue] = useState("");
@@ -143,11 +146,7 @@ export default function CatalogPage() {
           </Link>
         </div>
 
-        {isCategoryLoading && (
-          <div className="flex justify-center items-center h-full">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#d7d0fe]"></div>
-          </div>
-        )}
+        {isCategoryLoading && <LoadingSpinner />}
 
         {/* Kategori horizontal scroll */}
         <div className="mb-5 overflow-x-auto pb-2 no-scrollbar">
@@ -157,7 +156,7 @@ export default function CatalogPage() {
                 <button
                   key={cat.cat_id}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  className={`cursor-pointer px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                     selectedCategory.cat_id === cat.cat_id
                       ? "bg-[#37393d] text-white"
                       : "bg-white text-[#37393d] hover:bg-[#37393d]/10 border border-[#efecff]"
@@ -169,92 +168,98 @@ export default function CatalogPage() {
           </div>
         </div>
 
-        {isCatalogLoading && <Loading />}
-
-        {/* List Produk Vertikal */}
-        <div className="grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          {products &&
-            products.map((product, index) => {
-              // Tentukan warna berdasarkan index
-              let boxStyle = {
-                backgroundColor: "#d7d0fe",
-                color: "#000",
-                fontWeight: "bold",
-                fontSize: "24px",
-              };
-
-              if (index % 3 === 1) {
-                boxStyle = {
-                  backgroundColor: "#ffecba",
+        {isCatalogLoading ? (
+          <div className="flex justify-center items-center h-[50vh] ">
+            <div className="text-center">
+              <LoadingSpinner size="lg" />
+              <p className="mt-2 font-medium">Loading...</p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+            {products &&
+              products.map((product, index) => {
+                // Tentukan warna berdasarkan index
+                let boxStyle = {
+                  backgroundColor: "#d7d0fe",
                   color: "#000",
                   fontWeight: "bold",
                   fontSize: "24px",
                 };
-              } else if (index % 3 === 2) {
-                boxStyle = {
-                  backgroundColor: "#37393d",
-                  color: "#fff",
-                  fontWeight: "bold",
-                  fontSize: "24px",
-                };
-              }
 
-              return (
-                <div
-                  key={product.mtrl_code}
-                  className="bg-white rounded-xl overflow-hidden border border-[#efecff] cursor-pointer flex hover:shadow-md transition"
-                  onClick={() => handleAddToCart(product)}
-                >
-                  {/* Kotak di kiri dengan warna dinamis */}
+                if (index % 3 === 1) {
+                  boxStyle = {
+                    backgroundColor: "#ffecba",
+                    color: "#000",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                  };
+                } else if (index % 3 === 2) {
+                  boxStyle = {
+                    backgroundColor: "#37393d",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                  };
+                }
+
+                return (
                   <div
-                    className="w-12 font-semibold flex justify-center items-center"
-                    style={boxStyle}
+                    key={product.mtrl_code}
+                    className="bg-white rounded-xl overflow-hidden border border-[#efecff] cursor-pointer flex hover:shadow-md transition"
+                    onClick={() => handleAddToCart(product)}
                   >
-                    ⌘
-                  </div>
+                    {/* Kotak di kiri dengan warna dinamis */}
+                    <div
+                      className="w-12 font-semibold flex justify-center items-center"
+                      style={boxStyle}
+                    >
+                      ⌘
+                    </div>
 
-                  {/* Info produk */}
-                  <div className="p-4 flex-1 flex flex-col gap-2">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-[#1e1e1e] text-base leading-tight">
-                          {product.mtrl_name}
-                        </h3>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          {product.cat_name}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {product.sell_price === "0"
-                            ? "Gratis"
-                            : `${formatCurrency(product.sell_price)}`}
-                          <span className="text-xs text-gray-500 ml-1">
-                            / {product.satuan}
-                          </span>
-                        </p>
-                      </div>
+                    {/* Info produk */}
+                    <div className="p-4 flex-1 flex flex-col gap-2">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-[#1e1e1e] text-base leading-tight">
+                            {product.mtrl_name}
+                          </h3>
+                          <p className="text-xs text-gray-500 mt-0.5">
+                            {product.cat_name}
+                          </p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {product.sell_price === "0"
+                              ? "Gratis"
+                              : `${formatCurrency(product.sell_price)}`}
+                            <span className="text-xs text-gray-500 ml-1">
+                              / {product.satuan}
+                            </span>
+                          </p>
+                        </div>
 
-                      <div className="flex flex-col items-end gap-1 shrink-0">
-                        <p
-                          className={`text-xs font-medium ${
-                            Number(product.stock) > 0
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}
-                        >
-                          Stok: {product.stock}
-                        </p>
-                        {Number(product.stock) === 0 && (
-                          <span className="text-xs font-light text-[#f57772]">
-                            habis
-                          </span>
-                        )}
+                        <div className="flex flex-col items-end gap-1 shrink-0">
+                          <p
+                            className={`text-xs font-medium ${
+                              Number(product.stock) > 0
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            Stok: {product.stock}
+                          </p>
+                          {Number(product.stock) === 0 && (
+                            <span className="text-xs font-light text-[#f57772]">
+                              habis
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-        </div>
+                );
+              })}
+          </div>
+        )}
       </section>
 
       {/* Bottom bar jika ada barang di keranjang */}

@@ -3,36 +3,21 @@ import { Link } from "react-router-dom";
 import { useActivity } from "../hooks/useActivity";
 import { useTransactionStatus } from "../store/useTransactionStatus";
 import type { Activity } from "@/types/activity.types";
-
-
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * Komponen untuk menampilkan riwayat transaksi
- * 
- * @param {string} status - status transaksi yang ingin ditampilkan
- * @param {Record<string, Activity[]>} grouped - objek yang berisi riwayat transaksi yang sudah di group
- * @returns {JSX.Element} element yang menampilkan riwayat transaksi
- */
+import Loading from "@/components/fragments/Loadin";
+import Error from "@/components/fragments/Error";
+import DebugStringify from "@/components/fragments/DebugStringify";
 
 export default function ActivityBase() {
   const { status, setStatus } = useTransactionStatus();
-  const { data: transactions = [], isLoading, isError, error } = useActivity({
+  const {
+    data: transactions = [],
+    isLoading,
+    isError,
+    error,
+  } = useActivity({
     email: "testingkasir@gmail.com",
-    status
+    status,
   });
-
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (isError) {
-    return <p>Error: {error?.message || 'Something went wrong'}</p>;
-  }
-
-  if (transactions.length === 0) {
-    return <p>Tidak ada transaksi.</p>;
-  }
-
 
   const categories = [
     { label: "Selesai", value: 0 },
@@ -49,7 +34,12 @@ export default function ActivityBase() {
 
   const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
   const iconBgColors = ["#d7d0fe", "#ffecba", "#efecfa", "#ffffff"]; // urutan warna yang ingin dipakai
-  return (
+
+  return isLoading ? (
+    <Loading />
+  ) : isError ? (
+    <Error customMessage={`${error.message}`} />
+  ) : (
     <div className="p-4 md:p-6 mb-32 min-h-screen">
       <section>
         <div className="">
@@ -66,11 +56,11 @@ export default function ActivityBase() {
                   key={cat.value}
                   onClick={() => setStatus(cat.value)}
                   className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors
-            ${status === cat.value
-                      ? "bg-[#37393d] text-white"
-                      : "bg-white text-[#37393d] hover:bg-[#37393d]/10 border border-[#efecff]"
-                    }
-          `}
+            ${
+              status === cat.value
+                ? "bg-[#37393d] text-white"
+                : "bg-white text-[#37393d] hover:bg-[#37393d]/10 border border-[#efecff]"
+            }`}
                 >
                   {cat.label}
                 </button>
@@ -78,69 +68,77 @@ export default function ActivityBase() {
             </div>
           </div>
 
-          {sortedDates.map((date) => {
-            const formattedDate = formatTanggal(date);
-            const txs = grouped[date];
+          {!sortedDates && (
+            <div className="text-center">
+              <p className="text-gray-600 dark:text-gray-300 font-medium text-lg">
+                Tidak ada transaksi
+              </p>
+            </div>
+          )}
 
-            return (
-              <div key={date} className="mt-6">
-                {/* Header tanggal per grup */}
-                <h4 className="text-lg font-medium text-[#37393d] mb-3">
-                  {formattedDate}
-                </h4>
+          {sortedDates &&
+            sortedDates.map((date) => {
+              const formattedDate = formatTanggal(date);
+              const txs = grouped[date];
 
-                <div className="space-y-2">
-                  {txs.map((tx, i) => (
-                    <div
-                      key={tx.out_no}
-                      className="rounded-full p-1.5 bg-[#f9f8fd] focus:bg-white focus:scale-105 transition-all cursor-pointer duration-200"
-                    >
-                      <Link to={`/activity/${tx.out_no}`}>
-                        <div className="flex items-center">
-                          {/* Icon kiri */}
-                          <div className="mr-3">
-                            <div
-                              className="rounded-full w-12 h-12 flex items-center justify-center transition-colors"
-                              style={{
-                                backgroundColor:
-                                  iconBgColors[i % iconBgColors.length], // bergilir sesuai array
-                              }}
-                            >
-                              <span className="text-2xl font-bold">⌘</span>
+              return (
+                <div key={date} className="mt-6">
+                  <h4 className="text-lg font-medium text-[#37393d] mb-3">
+                    {formattedDate}
+                  </h4>
+
+                  <div className="space-y-2">
+                    {txs.map((tx, i) => (
+                      <div
+                        key={tx.out_no}
+                        className="rounded-full p-1.5 bg-[#f9f8fd] focus:bg-white focus:scale-105 transition-all cursor-pointer duration-200"
+                      >
+                        <Link to={`/activity/${tx.out_no}`}>
+                          <div className="flex items-center">
+                            {/* Icon kiri */}
+                            <div className="mr-3">
+                              <div
+                                className="rounded-full w-12 h-12 flex items-center justify-center transition-colors"
+                                style={{
+                                  backgroundColor:
+                                    iconBgColors[i % iconBgColors.length],
+                                }}
+                              >
+                                <span className="text-2xl font-bold">⌘</span>
+                              </div>
+                            </div>
+
+                            {/* Text tengah */}
+                            <div className="flex-1">
+                              <p className="text-foreground font-medium text-lg">
+                                {tx.cust_name}
+                              </p>
+                              <p className="text-sm font-light text-[#37393d/70]">
+                                {tx.out_no}
+                              </p>
+                            </div>
+
+                            {/* Action kanan */}
+                            <div className="ml-3">
+                              <div className="rounded-full h-12 flex items-center justify-center">
+                                <span className="text-foreground text-xl font-bold">
+                                  <p className="text-sm text-[#37393d]">
+                                    Rp{" "}
+                                    {Number(tx.grand_total).toLocaleString(
+                                      "id-ID"
+                                    )}
+                                  </p>
+                                </span>
+                              </div>
                             </div>
                           </div>
-
-                          {/* Text tengah */}
-                          <div className="flex-1">
-                            <p className="text-foreground font-medium text-lg">
-                              {tx.cust_name}
-                            </p>
-                            <p className="text-sm font-light text-[#37393d/70]">
-                              {tx.out_no}
-                            </p>
-                          </div>
-
-                          {/* Action kanan */}
-                          <div className="ml-3">
-                            <div className="rounded-full  h-12 flex items-center justify-center">
-                              <span className="text-foreground text-xl font-bold">
-                                <p className="text-sm text-[#37393d]">
-                                  Rp{" "}
-                                  {Number(tx.grand_total).toLocaleString(
-                                    "id-ID"
-                                  )}
-                                </p>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </section>
     </div>

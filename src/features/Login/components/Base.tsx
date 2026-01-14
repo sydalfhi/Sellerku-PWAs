@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, LoginFormValues } from "@/schemas/login.schema";
+import { loginSchema } from "@/schemas/login.schema";
+import type { LoginFormValues } from "@/schemas/login.schema";
 import { useLogin } from "../hooks/useLogin";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 export default function LoginBase() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,19 +23,16 @@ export default function LoginBase() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    try {
-      await mutateAsync(data);
+    await mutateAsync(data);
 
-      // ambil tujuan sebelumnya atau default ke /home
-      const from = location.state?.from?.pathname || "/home";
+    const from = location.state?.from?.pathname || "/home";
 
-      navigate(from, { replace: true }); // redirect ke tujuan awal
-    } catch (error) {
-      console.error(error);
-    }
+    navigate(from, { replace: true });
   };
+
   return (
     <div className="mt-[10vh] flex items-center justify-center p-4">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="w-full max-w-md">
         {/* Login Card */}
         <div className="rounded-2xl p-4">
